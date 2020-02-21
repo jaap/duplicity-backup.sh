@@ -75,7 +75,7 @@
 # This can be / or somewhere else -- I use /home/ because all the
 # directories that I want to backup start with /home/.
 #
-ROOT='/home'
+ROOT='/home/forge/'
 
 # Set hostname for this duplicity instance, useful for e-mail reports
 #
@@ -96,6 +96,7 @@ HOSTNAME=$(hostname -f)
 # remote file size check will work.
 
 #DEST="s3://host/backup-bucket/backup-folder/"
+#DEST="s3+http://foobar-backup-bucket/backup-folder/"
 DEST="s3+http://foobar-backup-bucket/backup-folder/"
 
 # Other possible locations
@@ -137,13 +138,13 @@ DEST="s3+http://foobar-backup-bucket/backup-folder/"
 # ------------------------------------------------------------------------------
 # Uncomment these lines if you're using Amazon S3
 #
-#AWS_ACCESS_KEY_ID="foobar_aws_key_id"
-#AWS_SECRET_ACCESS_KEY="foobar_aws_access_key"
+AWS_ACCESS_KEY_ID="ACCESSKEY"
+AWS_SECRET_ACCESS_KEY="SECRET"
 #
 # SET STORAGE CLASS for AWS
-# The default storage class is STANDARD STORAGE. You can comment this option if 
+# The default storage class is STANDARD STORAGE. You can comment this option if
 # want to go with standard. The other storage options are --s3-use-ia and --s3-use-rrs.
-# Note: --s3-use-ia option is supported only in duplicity version greater than 0.7.06 
+# Note: --s3-use-ia option is supported only in duplicity version greater than 0.7.06
 #
 #STORAGECLASS="--s3-use-ia"
 #
@@ -200,7 +201,7 @@ DEST="s3+http://foobar-backup-bucket/backup-folder/"
 #
 # Simpler example with one location:
 
-INCLIST=( '/home/foobar_user_name/Documents/' )
+INCLIST=( '/home/forge/' )
 
 
 # ------------------------------------------------------------------------------
@@ -212,18 +213,22 @@ INCLIST=( '/home/foobar_user_name/Documents/' )
 #
 # Here is an example with multiple locations:
 #
-#EXCLIST=(   '/home/*/Trash' \
-#            '/home/*/Projects/Completed' \
-#            '/**.DS_Store' \
-#            '/**Icon?' \
-#            '/**.AppleDouble' \
-#        )
+EXCLIST=(   '/home/*/Trash' \
+            '/home/*/Projects/Completed' \
+            '/**.DS_Store' \
+            '/**Icon?' \
+            '/**.AppleDouble' \
+            '**node_modules/**' \
+            '**vendor/**' \
+            '**.npm/**' \
+            '**.git/**' \
+        )
 #
 # If you don't want to exclude anything, use EXCLIST=()
 #
 # Simpler example with one location. Adapt it to your needs.
 
-EXCLIST=( '/home/foobar_user_name/Documents/foobar-to-exclude' )
+#EXCLIST=( '/home/foobar_user_name/Documents/foobar-to-exclude' )
 
 
 # ------------------------------------------------------------------------------
@@ -286,8 +291,8 @@ PASSPHRASE='foobar_gpg_passphrase'
 # Comment out if you're using only PASSPHRASE (symmetric encryption) or not using
 # encryption at all.
 
-GPG_ENC_KEY="foobar_gpg_key"
-GPG_SIGN_KEY="foobar_gpg_key"
+#GPG_ENC_KEY="foobar_gpg_key"
+#GPG_SIGN_KEY="foobar_gpg_key"
 
 # Do you want to hide the key id of the encrypted files? yes/no
 # It uses the gpg's --hidden-recipient command to obfuscate the owner of the backup.
@@ -374,9 +379,9 @@ CLEAN_UP_VARIABLE="4"
 # I run this script as root, but save the log files under my user name --
 # just makes it easier for me to read them and delete them as needed.
 
-LOGDIR="/home/foobar_user_name/logs/test2/"
+LOGDIR="/home/forge/.duplicity/logs"
 LOG_FILE="duplicity-$(date +%Y-%m-%d_%H-%M).txt"
-LOG_FILE_OWNER="foobar_user_name:foobar_user_name"
+LOG_FILE_OWNER="forge:forge"
 
 # Note that if the configured LOGDIR does not exist it will be created
 # and its owner:group set to that of the configured LOG_FILE_OWNER.
@@ -405,10 +410,10 @@ VERBOSITY="-v3"
 EMAIL_TO=
 EMAIL_FROM=
 EMAIL_SUBJECT=
-EMAIL_FAILURE_ONLY="yes" # send e-mail only if there was an error while creating backup
+EMAIL_FAILURE_ONLY="no" # send e-mail only if there was an error while creating backup
 
 # command to use to send mail
-MAIL="mailx"     # default command for Linux mail
+#MAIL="mailx"     # default command for Linux mail
 #MAIL="mail"     # for CentOS, if "mailx" fails try this one
 #MAIL="ssmtp"
 #MAIL="sendmail"
@@ -430,28 +435,28 @@ MAIL="mailx"     # default command for Linux mail
 # notifications will be sent.
 
 # Possible values for NOTIFICATION_SERVICE are: slack, pushover, ifttt, telegram
-NOTIFICATION_SERVICE=""
+NOTIFICATION_SERVICE="ifttt"
 NOTIFICATION_FAILURE_ONLY="yes" # send notifications only if there was an error while creating backup
 
 # Provider: Slack
-SLACK_HOOK_URL="https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX"
-SLACK_CHANNEL="#general"
-SLACK_USERNAME="duplicity-backup"
-SLACK_EMOJI="package"
+#SLACK_HOOK_URL="https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX"
+#SLACK_CHANNEL="#general"
+#SLACK_USERNAME="duplicity-backup"
+#SLACK_EMOJI="package"
 
 # Provider: Pushover
-PUSHOVER_TOKEN="" # App token generated at pushover.net
-PUSHOVER_USER="" # User key from pushover.net
+#PUSHOVER_TOKEN="" # App token generated at pushover.net
+#PUSHOVER_USER="" # User key from pushover.net
 
 # Provider: IFTTT
-IFTTT_KEY="" # Key for MAKER channel at IFTTT
+IFTTT_KEY="KEY" # Key for MAKER channel at IFTTT
 IFTTT_MAKER_EVENT="duplicity" # name the event to trigger at IFTTT Maker Channel
 IFTTT_HOOK_URL="https://maker.ifttt.com/trigger/$IFTTT_MAKER_EVENT/with/key/$IFTTT_KEY" # ONLY change this if IFTTT changes it
 IFTTT_VALUE2="" # general purpose value to pass to your maker channel (optional)
 
 # Provider: Telegram
-TELEGRAM_CHATID="" #Generate a Telegram bot following guide: https://core.telegram.org/bots#3-how-do-i-create-a-bot
-TELEGRAM_KEY=""
+#TELEGRAM_CHATID="" #Generate a Telegram bot following guide: https://core.telegram.org/bots#3-how-do-i-create-a-bot
+#TELEGRAM_KEY=""
 
 # ------------------------------------------------------------------------------
 # TROUBLESHOOTING
